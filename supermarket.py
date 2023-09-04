@@ -6,8 +6,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-# --- Inventory Management ---
-
+# Inventory Management
 class Inventory:
     def __init__(self, initial_stock: Dict[str, int]):
         self.stock = initial_stock
@@ -39,11 +38,10 @@ class AdvancedInventory(Inventory):
         current_time = datetime.now()
         for item, expiration_date in self.expiration_dates.items():
             if current_time > expiration_date:
-                logging.info(f"{item} has expired. Removing from inventory.")
+                logging.info(f"Oh no, {item} has expired. Let's remove it from the inventory!")
                 self.update_stock(item, -self.stock[item])
 
-# --- Customer Behavior ---
-
+# Customer Behavior
 class Supplier:
     def __init__(self, name: str, available_items: Dict[str, float], delivery_time: int=1):
         self.name = name
@@ -54,8 +52,7 @@ class Supplier:
         for item, quantity in order.items():
             if item in self.available_items:
                 inventory.update_stock(item, quantity)
-        logging.info(f"Order delivered: {order}")
-
+        logging.info(f"Great news! Your order has arrived: {order}")
 
 class Customer:
     def __init__(self, name: str):
@@ -83,13 +80,12 @@ class AdvancedCustomer(Customer):
         if self.budget is not None:
             total_cost = pricing[item] * quantity
             if total_cost > self.budget:
-                logging.info(f"{self.name} can't afford {item}. Skipping...")
+                logging.info(f"Hmm, looks like I can't afford {item} right now. Let's skip that.")
                 return
         self.add_to_cart(item, quantity)
         self.budget -= pricing[item] * quantity if self.budget is not None else 0
 
-# --- Employee Simulation ---
-
+# Employee Simulation
 class Employee:
     SALARY_PER_EMPLOYEE = 100
 
@@ -102,38 +98,37 @@ class Employee:
         if role_function:
             role_function(store)
         else:
-            logging.warning(f"Unknown role: {self.role}")
+            logging.warning(f"Hey, just so you know, I'm not sure what to do with the role '{self.role}'. 🤷‍♂️")
 
     def cashier(self, store: 'Store'):
-        logging.info(f"{self.name} the Cashier is ready to checkout customers.")
+        logging.info(f"{self.name}, your friendly cashier, is here and ready to help you!")
 
     def stock_clerk(self, store: 'Store'):
-        logging.info(f"{self.name} the Stock Clerk is restocking items.")
+        logging.info(f"Hey there, I'm {self.name}, your stock clerk. Time to restock those shelves!")
         self.restock(store.inventory)
 
     def manager(self, store: 'Store'):
-        logging.info(f"{self.name} the Manager is managing the store.")
+        logging.info(f"Hello, I'm {self.name}, the manager in charge. Let's make sure things run smoothly.")
         self.manage_inventory(store.inventory)
         
     def restock(self, inventory: Inventory):
         for item in inventory.stock.keys():
             inventory.update_stock(item, 10)
-        logging.info("All items have been restocked.")
-    
+        logging.info("Just giving you a heads-up: all items have been restocked.")
+
     def manage_inventory(self, inventory: Inventory):
         low_stock_items = inventory.low_stock_alert()
         if low_stock_items:
-            logging.warning(f"Low Stock Alert: {low_stock_items}")
+            logging.warning(f"Hey, just wanted to mention that we have low stock on: {low_stock_items}.")
 
-# --- Store Operations ---
-
+# Store Operations
 class Store:
     def __init__(self, inventory: Inventory, promotions: Dict[str, float]):
         self.inventory = inventory
         self.promotions = promotions
 
     def checkout_customer(self, customer: Customer):
-        logging.info(f"{customer.name} has checked out with items: {customer.cart}")
+        logging.info(f"{customer.name} has finished shopping. Their cart contains: {customer.cart}")
 
 def apply_promotions(cart: Dict[str, int], promotions: Dict[str, float], pricing: Dict[str, float]) -> float:
     total_price = sum(pricing[item] * quantity for item, quantity in cart.items())
@@ -148,7 +143,7 @@ class EmployeeManagedStore(Store):
         self.employees = employees
     
     def start_shift(self):
-        logging.info("\n=== Starting Work Shift ===")
+        logging.info("\n=== Let's get to work! Starting a new shift. ===")
         for employee in self.employees:
             employee.perform_role(self)
 
@@ -181,12 +176,11 @@ class FinancialManagedStore(EmployeeManagedStore):
         self.cash_flow['net_profit'] = self.cash_flow['revenue'] - self.cash_flow['expenses']
         return self.cash_flow
 
-# --- Real-time Simulation Function ---
-
+# Real-time Simulation Function
 def real_time_simulation(store, duration=60):  # Extend the duration for better financial realism
-    print("\n=== Starting Real-Time Simulation ===")
+    print("\n=== Let's dive into a realistic supermarket simulation! ===")
     for i in range(1, duration + 1):  # Start from 1 to match your existing code
-        print(f"\n--- Simulation Minute: {i} ---")
+        print(f"\n--- Minute {i} of Simulation ---")
         customer_name = f"Customer_{i}"
         customer = AdvancedCustomer(customer_name, preferences=["Apple", "Milk"], budget=20)
         for _ in range(3):
@@ -205,12 +199,12 @@ def real_time_simulation(store, duration=60):  # Extend the duration for better 
         time.sleep(1)
     
     final_financial_report = store.generate_financial_report()
-    print("\n=== Final Comprehensive Financial Report ===")
-    print(f"Revenue: ${final_financial_report['revenue']:.2f}")
-    print(f"Expenses: ${final_financial_report['expenses']:.2f}")
+    print("\n=== Comprehensive Financial Report ===")
+    print(f"Total Revenue: ${final_financial_report['revenue']:.2f}")
+    print(f"Total Expenses: ${final_financial_report['expenses']:.2f}")
     print(f"Net Profit: ${final_financial_report['net_profit']:.2f}")
 
-# --- Initialize and Test the Simulation ---
+# Initialize and Test the Simulation
 
 # Initial stock and promotions
 initial_stock = {'Apple': 10, 'Banana': 10, 'Milk': 10}
